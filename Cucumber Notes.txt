@@ -1,0 +1,273 @@
+Day 1:
+==========
+Introduction about various frameworks
+=======================================
+We have learnt already few frameworks
+	1. Data-Driven
+	2. TestNG -(TDD ---> Test Driven Development)
+	3. Keyword Driven (like Data driven)
+	4. Hybrid (Datadriven + keyword driven)
+	5. Craft framework (CTS is using)
+
+But Cucumber is the most used framework in industry
+
+Cucumber Introduction:
+========================
+	1. This is the advanced framework
+	2. BDD Framework (Behavioural Driven Development)
+	3. Behaviour in the sense, We can create our own test case based on the application's behaviour
+	     in plain english language (Gherkin) in the colourful format
+	
+Here 3 main files are used in cucumber project
+	1. feature file
+	2. step definition
+	3. Runner
+
+workflow/architecture  of the cucumber
+----------------------------------------
+	
+	Feature file ---------------> step Definition -----------> Runner
+	 (TestCase)	   		(TestScript)		(Execution File)
+    Plain English or Gherkin        Java-Selenium Actions
+	  	     		  
+
+Cucumber Installation 
+=====================
+	Install Natural plugin in EclipseMarketplace.
+
+
+
+Create a Maven Project for cucumber
+=======================-===========
+	1. Name it AdactinCucumber
+
+	2. src/main/java---> com.adactin.baseclass  
+				----> BaseClass
+
+	3. src/test/java---> create 3 packages.
+			1. com.adactin.feature
+			2. com.adactin.runner
+			3. com.adactin.stepdefinition
+
+Day 2:
+========
+
+	    =====1. com.adactin.feature    ----> Create .feature file
+					File --> New--> File--> Adactin.feature (f should be lowercase)
+		       In Feature file-->
+                       ===============
+		           Feature:       Overall Functionality
+		           Scenario:      Detailed Functionality for each module
+		              Given       Pre condition
+		              When        Actions to be performed
+		              And         Additional actions
+		              Then        Validation(to verify whether the process is completed)
+
+			
+		========To convert feature file to stepdefinition we have to add 3 dependencies in pom.xml
+					Google =====>>cucumber maven dependency =====>> info.cukes MavenRepository
+						   1.cucumber junit      2. cucumber java       3. cucumber core 
+
+	        ========Add compiler plugin & surefire plugin from maven dependency
+
+	    =====2. com.adactin.runner   ===>> run the Runner File with Junit
+
+		                Runner class -->  
+
+				import org.junit.runner.RunWith;
+				import cucumber.api.CucumberOptions;
+
+				@Runwith(Cucumber.class) 
+			        @CucumberOptions(features ="src//test/java//com//adactin//feature",					
+                                                     glue ="com//adactin//stepdefinition")
+					       monochrome = true
+						   dryRun = false
+						   strict = true	
+		      ==========@CucumberOptions ---> to map feature & step definition each & every steps shd be in stpdefnition
+	
+		      ==========Now run ---> then copy the console & paste in stepdefinition
+
+	    =====3. com.adactin.stepdefinition  ----> 
+
+				Creating Java Selenium actions
+			
+				In feature file we have written test cases in plain english language (Gherkin Language), 
+				this is converted to java selenium action by extends Baseclass & bringing the selenium codes here.
+			
+                    Ex:===>@Given("^User launch the application$")
+	                   public void user_launch_the_application() throws Throwable {
+	                   driver = browserLaunch("chrome");
+	                   getUrl("http://adactinhotelapp.com/");    
+	                   }
+
+	                   @When("^User enters the valid username in the username field$")
+	                   public void user_enters_the_valid_username_in_the_username_field() throws Throwable {.
+		           SignInPage sp = new SignInPage(driver);
+		           inputValues(sp.getUsername(), "SreedeviRaman");
+	                   }
+	    =====5. In Runner Class 
+				add---->       monochrome = true   ----> to display the console in a proper readable format
+									 to remove all the special characters from the console caused by feature file colors(Given,When...)
+						   dryRun = false  ----> to check whether all steps in .feature file is present in Step definition
+						   strict = true   ----> to stop the process, if any mismatch between the feature file & Stepdefiniton
+
+Day 3:
+========
+
+	    =====4. Normal html Report Generation , json Report, CucumberExtentReport	
+			plugin= {"pretty","html:Report\\CucumberReport","json:Report\\Cucumber.json","com.cucumber.listener.ExtentCucumberFormatter:Report\\extentReport.html"}
+
+		
+	    =====5. Property File concept to store all the rarely changing datas
+						======>> com.adactin.properties
+			                                 In it create .property file to store the permanent/rarely changing datas. Here it is stored in key value pair.
+			                                        Ex: browsername = chrome
+			                                            url         = url of the application	 
+
+	    =====6. Create a package com.adactin.helper
+
+			Create a class ConfigurationReader
+			-------	In this we read datas from the PROPERTY FILE====
+			-------	First create a Constructor
+
+
+
+				public class ConfigurationReader{                ===========>>Constrcutor
+					//public static Properties p;
+
+					public ConfigurationReader{
+
+					File f = new File("path of propertyfile")       ====>> ".//src//test//java//com//adactin//property//Adactin.properties"
+					FileInputStream fis = new FileInputStream(f);   ====>> now we have to create constructor for ConfigurationReader, because FileInputStream will show error
+					Properties p = new Properties();                ====>> In Java Selenium we have a property file, we import it here.
+					p.laod(fis);                                    ====>> here we load fis in the java Selenium PropertyFile & so our propertyfile now becomes a true property file. 
+					
+					}
+				Now we get the properties from PROPERTYFILE, So create a METHOD to get the data.
+
+				private static void getBrowserName() {
+				String browsername = p.getProperty("browserName");      ====>> here we wont get the p. method, though we have loaded our property file bcz the property is declared inside
+				System.out.println(browsername);                           the constructor. So we'll have to declare Properties as class variable and assign the value inside the constructor.
+				}
+	
+				private  static void getUrl() {
+				String url = p.getProperty("url");
+				System.out.println(url);
+				}
+
+				public static void main(String[] args) throws IOException {
+				ConfigurationReader cf = new ConfigurationReader();
+				cf.getBrowserName();
+				cf.geturl();
+					}
+				}
+				First of all we'll check the properties are got from Propertyfile
+				O/P =========>> chrome
+						http://adactinhotelapp.com/
+
+
+Day 4:
+===========
+	     =====7. Singleton Design Pattern =======>>  One Object should be created for 1 class . That object can be used Wherever required in our framework. 
+			
+			Create a FileReaderManager Class in helper package. The purpose of FRM is to create OBJECT for CR.
+				 
+				 Here we have to create an object for ConfigurationReader Class.
+ 
+				 Inside the method getCrInstance, get return type for the object of the ConfiguratiionReader (cr).
+		
+				 Create object for FileReaderManager inside the getInstance method, which should be static. When we call this method it returns the object of FRM. so get return fr, which gives                                                                    
+				 FRM as return type.
+
+				 Create a private constructor for the FileReaderManager, because the object for FileReaderManager cannot be created in any other classes, as to avoid the creation of objects.		
+
+            		======In RunnerClass we need the property--browser so we need the CR class object, since we need the CR object we have to get the FRM object. 
+
+					String browserName = FileReaderManager.(we get the static method) getInstance (using the object of FRM we can call non-staic method).getCrInstance.getBrowserName(); 	
+				        driver = BaseClass.getbrowser(browserName);
+
+
+
+Day 5:
+=========
+            =====8. Create a Hooks Class ====>> in stepdefinition package
+                        @Before Hooks run before 1st step of each scenario.  @After Hooks run after Last step of each scenario.
+			          Here we create 2 methods called beforeHooks & afterHooks. 
+
+                        			In beforeHooks we can get the scenario name.
+ 
+						In afterHooks we can check status of each scenario, whether it is passed or failed. As we can get the status of scenarios we can get the screenshot of the failed 
+							test cases. So we can fail 1 of the test case in SDClass by adding Assert.assertequals('s','S');
+                                              
+ 						@Before
+						public void beforeHooks1(Scenario scenario) {
+						System.out.println(scenario.getName());
+						System.out.println("  Started:");
+						}
+	
+	
+						@After
+						public void afterHooks(Scenario scenario) throws IOException {
+						System.out.println("  Status:"+scenario.getStatus());
+						if (scenario.isFailed()) {
+						getScreenshot(scenario.getId());
+						System.out.println("Screenshot taken");
+						}
+						System.out.println(" completed:");
+						}
+                                           
+
+           
+
+	    =====9. Create a class PageObjectManager ----->> to create all the objects which are in StepDefinition
+
+				Here we use POJO class. If a variable is public, then only we can access from other class, but if it is private also we can access from other classes that process is called POJO class. We keep it 				
+			as private & can access from outside why bcz, we create the variable here only and access it only when it is necessary. So wherever we want to declare a private variable we can access POJO class. 
+			Create a constructor for POM so that we can declare the driver in it.
+
+			public class PageObjectManager {
+
+						public WebDriver driver;
+
+							private SignInPage sp;
+							private SearchHotel sh;
+							private SelectHotel sl;
+							private BookHotel bh;
+							private BookingConfirmationPage bp;
+
+							public PageObjectManager(WebDriver mdriver) {
+								this.driver = mdriver;
+								}
+
+							public SignInPage getSp() {
+								sp = new SignInPage(driver);
+								return sp;
+								}
+
+							Likewise for other Pages create the getters.
+				Here we are declaring the objects for all the classes & assigning the driver as value.
+
+				So now in, StepDefinitionn Class =====>>>create an object for POM as a class variable here in SDclass===>>>  public static PageObjectManager pom = new PageObjectManager(driver);
+
+				
+				From RUNNER we run =====>> From runner the driver =====>>> starts public static WebDriver driver; This driver is null, here from AdactinProperty file we get the chrome and from baseclass we assign the 				driver as chrome. Herafter the driver in Runner File is chrome. So then we use this chromedriver and use in stepdefinition as ((public static WebDriver driver=Runner.driver;)). Then we use this driver & assign in 			POM & use it for all the classes in POM. Now the chromedriver in POM, we pass to all the objects. For ex. 1st create Object for SignInpage here in POM. In SD we need the object for SignInPage which we have 			created in POM passing the driver & kept it ready. So we need sp (the object) we have to get from POM.
+
+			ConfigurationReader purpose is to get the property from propertyfile. So for propertyfile, CR to control that FRM. POM is to create all the objects for all the classses.
+
+		===================================
+
+		We should always pass the datas(username,password) from feature file. So, add the username and password in feature file. Change the dryRun to true & then run the RunnerClass. Now we get the  new methods. Copy it & paste 			it in SD. Change the args as username & password, which we get from Feature File. So now we have to check for multiple set of datas.
+
+
+
+
+		Difference between BeforeHooks and Background:
+		================================================
+		
+		Background is also 1 scenario, but it will be executed before each scenario.
+		
+		1. BeforeHooks will be executed first & followed by Background. 
+
+		2. BeforeHooks we can get the details or information of the scenario. In Background always we can use logIn functionality. 
+
+			

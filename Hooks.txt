@@ -1,0 +1,10 @@
+There are 2 HOOKS:
+===================
+1. BeforeHooks-- 
+	It will be executed before first step of each Scenario.
+	We can get the name of the scenario
+
+
+2.AfterHooks--
+	It will be executed after last step of each Scenario
+	We can get the screenshot of failed test cases.

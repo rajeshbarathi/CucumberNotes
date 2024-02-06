@@ -1,0 +1,11 @@
+browser = chrome
+url = https://www.saucedemo.com/
+
+
+
+labsURL = https://saucelabs.com/
+productHeader = Products
+cartHeader = Your Cart
+checkOutHeader = Checkout: Your Information
+checkoutOverview = Checkout: Overview
+total = Total: $53.99

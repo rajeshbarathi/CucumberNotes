@@ -1,0 +1,21 @@
+When we want to rerun in cucumber:
+	Create a class in com.adactin.runner as TestRunnerRerun
+
+	In the TestRunner class--> 
+
+				in the features add the---> Adactin.feature (specify the feature file name)
+				
+				in plugin add "rerun:Report/FailedScenario.txt"
+
+	A FailedScenario.txt file will be created in Report folder.
+
+	In that we'll get the failed scenario details
+
+	
+Now in TestRunnerRerun class in features= "@Report/FailedScenario.txt" ---> this is the path of the featurefile in Rerun
+	others all same as in TestRunner class
+
+now we can execute the test runner class
+
+We can execute in maven test ---> remove the parallel & fork counts
+

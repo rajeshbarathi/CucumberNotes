@@ -1,0 +1,118 @@
+Scenario = TestCases
+
+
+
+Featre   -->  Describes a high-level description or user story.
+Scenario -->  Describes a single test scenario.
+
+Gherkin language:
+
+	*) Given - Preconditions
+	*) When - Actions
+	*) Then - Expected output
+
+Feature  ---> List of scenarios. {Summary}
+Scenario ---> Business rule through list of steps with arguments. {Title} || Describes a single test scenario.
+Given    ---> Some precondition step
+When     ---> Describes the action taken by the user.
+Then     ---> Represents the expected outcome or result.
+And,But  ---> Additional steps, can be used to continue any of the previous steps. { But - Negative type }
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`~
+Scenario Outline  --> List of steps for data-driven as an Examples and <placeholder>
+Examples          --> Used within a Scenario Outline to provide sets of data.
+Background        --> List of steps run before each of the scenarios. {define steps that are common to all the tests in feature file}
+
+===========================================================================================================================================
+"Runer class"
+
+cucumber options:
+
+
+dryRun     -> checks if all the steps have the step def, no output
+publish    ->
+monochrome -> to avoid the special characters , console is more readable if its true
+plugins    -> "pretty" report generation 
+tags       -> it is like a group(testNG)  tags = {"name"}
+	   -> if we dont want to run that method tags={"~@name"}
+strict     -> true-- will fail the execution if there are undefined or pending steps
+
+
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+features --->   Specifies the path to the feature files or the directory containing feature files.
+		    @CucumberOptions(features = "src/test/resources/features")
+
+glue --->	    Specifies the package where Cucumber will look for step definitions.
+		    @CucumberOptions(glue = "com.example.steps")
+
+tags --->	    Specifies the tags to include or exclude scenarios based on their tags.
+		    @CucumberOptions(tags = "@smoke and not @ignore")
+
+plugin --->	    Specifies the formatters to use, such as pretty, html, json, etc.
+		    @CucumberOptions(plugin = {"pretty", "html:target/cucumber-reports"})
+
+monochrome --->   Makes the console output more readable by removing ANSI escape codes.
+		  @CucumberOptions(monochrome = true)
+
+dryRun --->	     Checks that all steps have matching step definitions but skips the actual execution of scenarios.
+		     @CucumberOptions(dryRun = true)
+
+strict --->      Treats undefined and pending steps as errors.
+		@CucumberOptions(strict = true)
+
+name --->        Specifies a pattern to run scenarios with names matching the given string.
+		@CucumberOptions(name = "^Login.*$")
+
+snippets --->    Specifies the code snippet type for step definitions. Default is SnippetType.UNDERSCORE.
+		@CucumberOptions(snippets = SnippetType.CAMELCASE)
+
+
+stepNotifications --->    Sends detailed information about each step to the output.
+			@CucumberOptions(stepNotifications = true)
+
+features (deprecated) --->
+
+	Specifies the path to the feature files or the directory containing feature files. Deprecated in favor of the non-deprecated features option.
+		@CucumberOptions(features = "src/test/resources/features")
+
+
+===========================================================================================================================================
+
+Scenario vs Scenario outline
+	*) Multiple data can be passed to outline whereas single data can be passed to scenario in feature file.
+	   scenario outline multiple inputs under examples inside | pipe symbol
+
+
+
+============================================================================================================================================================
+
+
+Background:
+
+	*) The Background keyword in Cucumber is used to define a set of steps that are common to all the scenarios in a feature file.
+	   moving common steps into a Background section.
+
+[example]
+
+[Scenario --> Checkout Process]
+
+Feature: Checkout Process
+
+  Background:
+    Given the user has items in the cart
+
+  Scenario: Proceed to Checkout
+    When the user proceeds to checkout
+    Then the user should see the checkout page
+
+  Scenario: Enter Shipping Information
+    When the user enters shipping information
+    And confirms the order
+    Then the order should be placed successfully
+
+
+================================================================================================================================================================
+	

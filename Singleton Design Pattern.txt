@@ -1,0 +1,47 @@
+Singleton Design Pattern
+-------------------------
+This concept is acheived by creating new class:
+In this class:
+
+	Here only, we have to create objects of other classes
+		-- in one place --- only one time	
+
+Use:
+----
+	To use less memory.
+	Restriction of creating objects in many places.
+
+
+3 things:
+========
+
+1. private empty constructor
+2. create object of that same class, in a static method
+3. create object of required class(configuration reader), in a non-static method
+
+Here,
+What is the requirement?
+Ans: object of Configuration reader
+
+How will you get object of CR?
+Ans: cr is at getCrInstance method in FileReaderManager class
+
+
+So,
+1. FileReaderManager gives the static method 
+2. So we need to make getinstance method as static 
+3. By calling method getinstance (static) we can get object of FRM
+4. Using object FRM, we can call non-static method (getCrInstance)
+5. So, getCrInstance will return object of CR.
+
+
+
+
+
+
+
+
+
+
+
+
